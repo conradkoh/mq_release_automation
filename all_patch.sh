@@ -1,4 +1,7 @@
 #!/bin/bash
+#Name: 		ALL_PATCH 
+#Version:	1.1
+#shell config
 set -e
 
 #========================================
@@ -15,14 +18,23 @@ read new_release_version;
 #initialize variables
 #========================================
 base_dir=${PWD}
+	
+#generate the release variables
+release_folder_name="$prefix""_patch""_f""$base_release_version""_t""$new_release_version"
+patches_folder="patches/""$release_folder_name"
+
+#directory checking
+if ! [[ -d $patches_folder ]];
+then
+mkdir "$patches_folder"
+else
+echo "path folder ""$patches_folder""exists"
+fi 
 
 #========================================
 #function declarations
 #========================================
 create_release(){
-	#!/bin/bash
-	#version 1.0
-	#shell config
 	set -e
 	index_folder_name=1;
 	index_base_release_version=2;
@@ -31,21 +43,14 @@ create_release(){
 	folder_name=$1
 	base_release_version=$2
 	new_release_version=$3
+	
 	echo "[$folder_name] - PATCH f_$base_release_version t_$new_release_version";
 	#if all required vars have been provided, execute
 	if ! [[ -z "$folder_name" ]] && ! [[ -z "$base_release_version" ]] && ! [[ -z "$new_release_version" ]];
 		then
 			#folder definitions
-			patches_folder='patches'
 			folder_patch_suffix=_patch
-			diff_filename=portal.diff
-
-
-			#folder organization
-			if ! [[ -d $patches_folder ]];
-			then
-			mkdir "$patches_folder"
-			fi 
+			diff_filename=diff.file
 
 			#========================================
 			#remove .diff file if it already exists
@@ -88,7 +93,7 @@ create_release(){
 				rm -r "$destination"
 				echo "Patch destination folder removed"
 			fi
-			mkdir -p $destination #create patch directory
+			mkdir -p "$destination" #create patch directory
 
 			#========================================
 			#Build the release patch
@@ -129,4 +134,12 @@ echo "$prefix""_db created successfully";
 create_release "$prefix"_reporting "$base_release_version" "$new_release_version"
 echo "$prefix""_reporting created successfully";
 
+
+#========================================
+#patch summary
+#========================================
+echo "Release Version:" >> "$base_dir"/"$patches_folder"/"version.txt"
+echo "$new_release_version" >> "$base_dir"/"$patches_folder"/"version.txt"
+echo "Previous Version:" >> "$base_dir"/"$patches_folder"/"version.txt"
+echo "$base_release_version" >> "$base_dir"/"$patches_folder"/"version.txt"
 echo "Patches created.";
