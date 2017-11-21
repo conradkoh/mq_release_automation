@@ -21,12 +21,12 @@ base_dir=${PWD}
 	
 #generate the release variables
 release_folder_name="$prefix""_patch""_f""$base_release_version""_t""$new_release_version"
-patches_folder="patches/""$release_folder_name"
+patches_folder="patches"/"$release_folder_name"/"patch"
 
 #directory checking
 if ! [[ -d $patches_folder ]];
 then
-mkdir "$patches_folder"
+mkdir -p "$patches_folder"
 else
 echo "path folder ""$patches_folder""exists"
 fi 
