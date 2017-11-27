@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<configuration>
+	<grepDeploymentVersionVariables>
+		<add key="versionPath" value="..\patch"/>
+		<add key="versionFilename" value="version.txt"/>
+	</grepDeploymentVersionVariables>
+</configuration>
