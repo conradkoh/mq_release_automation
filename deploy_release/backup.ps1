@@ -1,8 +1,28 @@
-
-# DEPRECATED
-# Do not have to backup db actually, since it's just scripts
-function databaseBackup() {
-	generateBackupVersionContentXml "portalDatabaseLatestBackupFile" ""
+function databaseBackup($destinationFolder, $portalDatabaseDestination, $oldVersion) {
+	echo "=================================================="
+	echo "| Backup database folder."
+	echo "=================================================="
+	echo "Destination folder path          : $destinationFolder"
+	echo "Database destination folder path: $portalDatabaseDestination"
+	echo "Old version                      : $oldVersion"
+	$constructedPath = "$destinationFolder\$portalDatabaseDestination"
+	echo "Constructed backup path          : $constructedPath"
+	$resolvedBackupPath = resolve-path "$($destinationFolder)"
+	$resolvedConstructedPath = resolve-path "$($constructedPath)"
+	echo "Resolved destination path        : $resolvedBackupPath"
+	echo "Resolved constructed path        : $resolvedConstructedPath"
+	$currentDate = date -f yyyyMMdd_HHmmss
+	
+	
+	Add-Type -assembly "system.io.compression.filesystem"
+	$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
+	if ((test-path "$($resolvedBackupPath)\$($portalDatabaseDestination)_$($oldVersion).zip") -eq $true) {
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalDatabaseDestination)_$($oldVersion)_$($currentDate).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalDatabaseLatestBackupFile" "$($resolvedBackupPath)\$($portalDatabaseDestination)_$($oldVersion)_$($currentDate).zip"
+	} else {
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalDatabaseDestination)_$($oldVersion).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalDatabaseLatestBackupFile" "$($resolvedBackupPath)\$($portalDatabaseDestination)_$($oldVersion).zip"
+	}
 }
 
 function reportingBackup($destinationFolder, $portalReportingDestination, $oldVersion) {
@@ -125,7 +145,7 @@ $isPortal = $enabledComponentsConfigFile.configuration.enabledComponentsVariable
 generateBackupVersionBeginXml
 
 if($isDatabase -eq $true) {
-	databaseBackup
+	databaseBackup $destinationFolder $portalDatabaseVariables[1] $oldVersion
 } else {
 	generateBackupVersionContentXml "portalReportingLatestReportingFile" ""
 }
