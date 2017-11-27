@@ -1,7 +1,9 @@
 
 # DEPRECATED
 # Do not have to backup db actually, since it's just scripts
-function databaseBackup() {}
+function databaseBackup() {
+	generateBackupVersionContentXml "portalDatabaseLatestBackupFile" ""
+}
 
 function reportingBackup($destinationFolder, $portalReportingDestination, $oldVersion) {
 	echo "=================================================="
@@ -21,10 +23,12 @@ function reportingBackup($destinationFolder, $portalReportingDestination, $oldVe
 	
 	Add-Type -assembly "system.io.compression.filesystem"
 	$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
-	if ((test-path "$($resolvedBackupPath)\$($portalReportingDestination)_$oldVersion.zip") -eq $true) {
-		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalReportingDestination)_$oldVersion_$currentDate.zip", $compressionLevel, $false)
+	if ((test-path "$($resolvedBackupPath)\$($portalReportingDestination)_$($oldVersion).zip") -eq $true) {
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalReportingDestination)_$($oldVersion)_$($currentDate).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalReportingLatestBackupFile" "$($resolvedBackupPath)\$($portalReportingDestination)_$($oldVersion)_$($currentDate).zip"
 	} else {
-		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalReportingDestination)_$oldVersion.zip", $compressionLevel, $false)
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalReportingDestination)_$($oldVersion).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalReportingLatestBackupFile" "$($resolvedBackupPath)\$($portalReportingDestination)_$($oldVersion).zip"
 	}
 }
 
@@ -47,12 +51,43 @@ function portalBackup($destinationFolder, $portalPortalDestination, $oldVersion)
 	Add-Type -assembly "system.io.compression.filesystem"
 	$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
 	if ((test-path "$($resolvedBackupPath)\$($portalPortalDestination)_$oldVersion.zip") -eq $true) {
-		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalPortalDestination)_$oldVersion_$currentDate.zip", $compressionLevel, $false)
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalPortalDestination)_$($oldVersion)_$($currentDate).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalPortalLatestBackupFile" "$($resolvedBackupPath)\$($portalPortalDestination)_$($oldVersion)_$($currentDate).zip"
 	} else {
-		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalPortalDestination)_$oldVersion.zip", $compressionLevel, $false)
+		[io.compression.zipfile]::CreateFromDirectory("$($resolvedConstructedPath)", "$($resolvedBackupPath)\$($portalPortalDestination)_$($oldVersion).zip", $compressionLevel, $false)
+		generateBackupVersionContentXml "portalPortalLatestBackupFile" "$($resolvedBackupPath)\$($portalPortalDestination)_$($oldVersion).zip"
 	}
 }
 
+
+
+function generateBackupVersionBeginXml() {
+	$outputLocation = ".\config\backupVersionsConfig.xml"
+
+	echo "Generating $($outputLocation)"
+	
+	# IMPORTANT: Line[3] is old version, line[1] is new version.
+	echo "<?xml version=`"1.0`"?>" > $outputLocation
+	echo "<configuration>" >> $outputLocation
+	echo "	<backupVariables>" >> $outputLocation
+	return
+}
+
+function generateBackupVersionContentXml($key, $value) {
+	$outputLocation = ".\config\backupVersionsConfig.xml"
+	echo "		<add key=`"$($key)`" value=`"$($value)`" />" >> $outputLocation
+	return
+}
+
+function generateBackupVersionEndXml() {
+	$outputLocation = ".\config\backupVersionsConfig.xml"
+	echo "	</backupVariables>" >> $outputLocation
+	echo "</configuration>" >> $outputLocation
+	
+	echo "Done!"
+	echo ""
+	return
+}
 
 
 
@@ -87,18 +122,27 @@ $isDatabase = $enabledComponentsConfigFile.configuration.enabledComponentsVariab
 $isReporting = $enabledComponentsConfigFile.configuration.enabledComponentsVariables.add[1].value	# Is reporting component enabled
 $isPortal = $enabledComponentsConfigFile.configuration.enabledComponentsVariables.add[2].value		# Is portal component enabled
 
+generateBackupVersionBeginXml
+
 if($isDatabase -eq $true) {
+	databaseBackup
+} else {
+	generateBackupVersionContentXml "portalReportingLatestReportingFile" ""
 }
 
 if($isReporting -eq $true) {
 	reportingBackup $destinationFolder $portalReportingVariables[1] $oldVersion
+} else {
+	generateBackupVersionContentXml "portalReportingLatestBackupFile" ""
 }
 
 if($isPortal -eq $true) {
 	portalBackup $destinationFolder $portalPortalVariables[1] $oldVersion
+} else {
+	generateBackupVersionContentXml "portalPortalLatestBackupFile" ""
 }
 
-
+generateBackupVersionEndXml
 
 
 
