@@ -1,4 +1,5 @@
 .DS_Store
-
-.\deploy_release\log.txt
-./deploy_release/log.txt
+deploy_release/log.txt
+deploy_release/config/deploymentDateConfig.xml
+deploy_release/config/enabledComponentsConfig.xml
+deploy_release/config/releaseVersionsConfig.xml
