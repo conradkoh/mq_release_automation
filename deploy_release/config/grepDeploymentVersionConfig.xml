@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- We should never have to modify this file. -->
 <configuration>
 	<grepDeploymentVersionVariables>
 		<add key="versionPath" value="..\patch"/>

@@ -2,7 +2,7 @@
 <configuration>
 	<commonVariables>
 		<add key="environment" value="Staging" />
-		<!-- We shouldn't have to change this path -->
+		<!-- We should never have to change this path -->
 		<add key="sourceFolderPath" value="..\patch" />
 		<!-- Target folder should be a absolute path. -->
 		<add key="destinationFolderPath" value="..\target" />
