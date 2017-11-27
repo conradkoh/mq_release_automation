@@ -1,3 +1,4 @@
 .DS_Store
 
 .\deploy_release\log.txt
+./deploy_release/log.txt
