@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<configuration>
+	<commonVariables>
+		<add key="environment" value="Staging" />
+		<!-- We should never have to change this path -->
+		<add key="sourceFolderPath" value="..\patch" />
+		<!-- Target folder should be a absolute path. -->
+		<add key="destinationFolderPath" value="..\target" />
+	</commonVariables>
+	<!-- Assumption: If patch source path does not exist, means we are not patching that folder. -->
+	<!-- Assertion: If destination path does not exist, it is an error." -->
+	<!-- Assertion: The code will append the version number to the source folder. -->
+	<!--            Version number will be acquired from releaseVersionsConfig.xml file. -->
+	<portalDatabaseVariables>
+		<add key="sourcePath" value="database1" />
+		<add key="destinationPath" value="database2" />
+	</portalDatabaseVariables>
+	<portalReportingVariables>
+		<add key="sourcePath" value="reporting1" />
+		<add key="destinationPath" value="reporting2" />
+	</portalReportingVariables>
+	<portalPortalVariables>
+		<add key="sourcePath" value="portal1" />
+		<add key="destinationPath" value="portal2" />
+	</portalPortalVariables>
+</configuration>
