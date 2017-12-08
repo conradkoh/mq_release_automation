@@ -1,6 +1,6 @@
 #!/bin/bash
-#Name: 		ENCRYPT_ALL_PATCH 
-#Version:	1.0
+#Name: 		ALL_PATCH 
+#Version:	1.1
 #shell config
 set -e
 
@@ -18,7 +18,7 @@ read new_release_version;
 #initialize variables
 #========================================
 base_dir=${PWD}
-password="Ju$td0it"
+password='Ju$td0it'
 
 #generate the release variables
 release_folder_name="$prefix""_patch""_f""$base_release_version""_t""$new_release_version"
@@ -153,5 +153,5 @@ cd "$base_dir"/"$patches_folder"
 zip -P "$password" -r "$base_dir"/"$release_folder"".zip" ./*
 rm -rf "$base_dir"/"$release_folder"
 
-echo "Patches created & encrypted.";
+echo "Patches created & encrypted. Password for the file is ${password}";
 read
