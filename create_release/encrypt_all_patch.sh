@@ -1,6 +1,6 @@
 #!/bin/bash
-#Name: 		ALL_PATCH 
-#Version:	1.1
+#Name: 		ENCRYPT_ALL_PATCH 
+#Version:	1.0
 #shell config
 set -e
 
