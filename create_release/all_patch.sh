@@ -2,6 +2,7 @@
 #Name: 		ALL_PATCH 
 #Version:	1.1
 #shell config
+clear
 set -e
 
 #========================================
@@ -20,7 +21,7 @@ read new_release_version;
 base_dir=${PWD}
 	
 #generate the release variables
-release_folder_name="$prefix""_patch""_f""$base_release_version""_t""$new_release_version"
+release_folder_name="$prefix""_patch""_t""$new_release_version""_f""$base_release_version"
 patches_folder="patches"/"$release_folder_name"/"patch"
 
 #directory checking
@@ -44,7 +45,7 @@ create_release(){
 	base_release_version=$2
 	new_release_version=$3
 	
-	echo "[$folder_name] - PATCH f_$base_release_version t_$new_release_version";
+	echo "[$folder_name] - PATCH t_$new_release_version f_$base_release_version";
 	#if all required vars have been provided, execute
 	if ! [[ -z "$folder_name" ]] && ! [[ -z "$base_release_version" ]] && ! [[ -z "$new_release_version" ]];
 		then
